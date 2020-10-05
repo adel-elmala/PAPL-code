@@ -1,0 +1,43 @@
+data Lz<T>:
+  | Lzlink(e :: T,r :: ( -> Lz<T>))
+end
+
+rec ones = Lzlink(1 , {(): ones })
+
+fun nat(n :: Number):
+  
+  Lzlink( n , {() : nat(n + 1)} )
+
+end
+
+nats  = nat(0)
+
+fun fst<T>(s :: Lz<T>) -> T:
+  s.e
+end
+
+
+fun rst<T>(s :: Lz<T>) -> Lz<T>:
+
+  s.r()
+
+end
+
+fun take<T>(s :: Lz<T>, n :: Number) -> List<T>:
+  if n > 0:
+
+    link(fst(s),take(rst(s),n - 1))
+  else: empty
+  end
+
+end
+
+
+fun mapSt<T>(fn :: (T ->  T), si :: Lz<T>) -> Lz<T>:
+  
+  Lzlink( fn( fst(si) ) ,
+    {(): mapSt(fn,rst(si))}
+    
+    )
+  
+end
